@@ -5,17 +5,15 @@ const Constraint = Matter.Constraint;
 
 var engine, world;
 var canvas;
-var player, playerBase, playerArcher; //board, arrow;
-var baseimage, playerArcherImg; //boardImg, arrowImg;
-
+var palyer, playerBase, playerArcher;
+var arrow;
+var baseimage;
+var playerimage;
 
 function preload() {
   backgroundImg = loadImage("./assets/background.png");
   baseimage = loadImage("./assets/base.png");
   playerimage = loadImage("./assets/player.png");
-  playerArcherImg = loadImage("./assets/playerArcher.png");
-  //boardImg = loadImage("./assets/board.png");
-  //arrowImg = loadImage("./assets/arrow.png");
 }
 
 function setup() {
@@ -23,53 +21,50 @@ function setup() {
 
   engine = Engine.create();
   world = engine.world;
-  angleMode(DEGREES);
 
-  //criar corpo da base do jogador
+  angleMode(DEGREES);
 
   var options = {
     isStatic: true
   };
 
-  playerBase = Bodies.rectangle(200,350,180,150,options);
-  World.add(world,playerBase);
+  playerBase = Bodies.rectangle(200, 350, 180, 150, options);
+  World.add(world, playerBase);
 
-  //criar corpo do jogador
+  player = Bodies.rectangle(250, playerBase.position.y - 160, 50, 180, options);
+  World.add(world, player)
 
-  player = Bodies.rectangle(250,playerBase.position.y - 160,50,180,options);
-  World.add(world,player);
+  playerArcher = new PlayerArcher(
+    340,
+    playerBase.position.y - 112,
+    120,
+    120
+  );
 
-
-  playerArcher = Bodies.rectangle(player.position.x + 30,player.position.y - 30,40,80,options);
-  World.add(world,player);
-
-
-
+  arrow = new PlayerArrow(
+    playerArcher.body.position.x,
+    playerArcher.body.position.y,
+    100,
+    10
+  );
 }
 
 function draw() {
   background(backgroundImg);
+  image(baseimage, playerBase.position.x, playerBase.position.y, 180, 150)
+  image(playerimage, player.position.x, player.position.y, 50, 180)
   Engine.update(engine);
 
-  //exibir a imagem  da base do jogador usando a função image()
+  playerArcher.display();
+  arrow.display();
 
-  imageMode(CENTER);
-  image(baseimage,playerBase.position.x,playerBase.position.y,180,150);
+  if (keyCode === 32) {
+    arrow.shoot(playerArcher.angle);
+  }
 
-  //exibir a imagem do jogador usando a função image()
-
-  imageMode(CENTER);
-  image(playerimage,player.position.x,player.position.y,50,180);
-
-
-  imageMode(CENTER);
-  image(playerArcherImg,playerArcher.position.x,playerArcher.position.y,40,80);
-
-  
-
-  // Title
+  // Título
   fill("#FFFF");
   textAlign("center");
   textSize(40);
-  text("EPIC ARCHER", width / 2, 100);
+  text("ARQUEIRO ÉPICO", width / 2, 100);
 }
