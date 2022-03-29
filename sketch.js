@@ -3,8 +3,6 @@ const World = Matter.World;
 const Bodies = Matter.Bodies;
 const Constraint = Matter.Constraint;
 
-  
-
 var engine, world;
 var canvas;
 var palyer, playerBase, playerArcher;
@@ -31,7 +29,7 @@ function setup() {
     120
   );
 
-  board1 = new Board(width - 300, 90, 50, 200);
+  board1 = new Board(width - 300, 330, 50, 200);
   board2 = new Board(width - 550, height - 300, 50, 200);
 }
 
@@ -50,6 +48,29 @@ function draw() {
   for (var i = 0; i < playerArrows.length; i++) {
     if (playerArrows[i] !== undefined) {
       playerArrows[i].display();
+
+      var board1Collision = Matter.SAT.collides(
+        board1.body,
+        playerArrows[i].body
+      ); 
+      
+      var board2Collision = Matter.SAT.collides(
+        board2.body,
+        playerArrows[i].body
+      );
+
+      if (board1Collision.collided || board2Collision.collided) {
+        console.log("Collided");
+      }
+
+      var posX = playerArrows[i].body.position.x;
+      var posY = playerArrows[i].body.position.y;
+
+      if (posX > width || posY > height) {
+        if (!playerArrows[i].isRemoved) {
+          playerArrows[i].remove(i);
+        }
+      }
     }
   }
 
@@ -59,28 +80,27 @@ function draw() {
   textSize(40);
   text("ARQUEIRO ÉPICO", width / 2, 100);
 
-  // Contagem de Flechas
+  // Contagem de flechas
   fill("#FFFF");
   textAlign("center");
   textSize(30);
   text("Flechas Restantes: " + numberOfArrows, 200, 100);
-
-  
 }
 
 function keyPressed() {
-   if (keyCode === 32) {
-     if (numberOfArrows > 0) {
-       var posX = playerArcher.body.position.x;
-       var posY = playerArcher.body.position.y;
-       var angle = playerArcher.body.angle;
-       var arrow = new PlayerArrow(posX, posY, 100, 10, angle);
+  if (keyCode === 32) {
+    if (numberOfArrows > 0) {
+      var posX = playerArcher.body.position.x;
+      var posY = playerArcher.body.position.y;
+      var angle = playerArcher.body.angle;
 
-       Matter.Body.setAngle(arrow.body, angle);
-       playerArrows.push(arrow);
-       numberOfArrows -= 1;
-     }
-   }
+      var arrow = new PlayerArrow(posX, posY, 100, 10, angle);
+
+      Matter.Body.setAngle(arrow.body, angle);
+      playerArrows.push(arrow);
+      numberOfArrows -= 1;
+    }
+  }
 }
 
 function keyReleased() {
