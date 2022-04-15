@@ -55,12 +55,10 @@ class PlayerArrow {
       var position = [this.body.position.x, this.body.position.y];
       this.trajectory.push(position);
     }
-    
+
     for (var i = 0; i < this.trajectory.length; i++) {
       fill("white");
-
       ellipse(this.trajectory[i][0], this.trajectory[i][1], 5, 5);
     }
-    
   }
 }

@@ -10,6 +10,8 @@ var playerArrows = [];
 var board1, board2;
 var numberOfArrows = 10;
 
+var score = 0;
+
 function preload() {
   backgroundImg = loadImage("./assets/background.png");
 }
@@ -29,7 +31,7 @@ function setup() {
     120
   );
 
-  board1 = new Board(width - 300, 330, 50, 200);
+  board1 = new Board(width - 300, 80, 50, 200);
   board2 = new Board(width - 550, height - 300, 50, 200);
 }
 
@@ -59,10 +61,10 @@ function draw() {
         playerArrows[i].body
       );
 
-      if (board1Collision.collided || board2Collision.collided) {
-        console.log("Collided");
+      if (board1Collision || board2Collision) {
+        score += 5;
       }
-
+      
       var posX = playerArrows[i].body.position.x;
       var posY = playerArrows[i].body.position.y;
 
@@ -82,11 +84,34 @@ function draw() {
   textSize(40);
   text("ARQUEIRO ÉPICO", width / 2, 100);
 
-  // Contagem de flechas
+  // Contagem de Flechas
   fill("#FFFF");
   textAlign("center");
   textSize(30);
   text("Flechas Restantes: " + numberOfArrows, 200, 100);
+  
+  // Pontuação
+  fill("#FFFF");
+  textAlign("center");
+  textSize(30);
+  text("Pontuação: " + score, width - 200, 100);
+
+  /*if (numberOfArrows == 5) {
+    gameOver();
+  }*/
+
+  if (numberOfArrows == 0) {
+    gameOver();
+  }
+
+  /*if (numberOfArrows = 0) {
+    gameOver();
+  }*/
+
+  /*if (numberOfArrows == 0) {
+    gameOver;
+  }*/
+
 }
 
 function keyPressed() {
@@ -99,7 +124,6 @@ function keyPressed() {
       var arrow = new PlayerArrow(posX, posY, 100, 10, angle);
 
       arrow.trajectory = [];
-      
       Matter.Body.setAngle(arrow.body, angle);
       playerArrows.push(arrow);
       numberOfArrows -= 1;
@@ -115,3 +139,23 @@ function keyReleased() {
     }
   }
 }
+
+function gameOver() {
+  swal(
+    {
+     title: `Fim de Jogo!!!`,
+      text: "Você consegiu " + score + " pontos!",
+      imageUrl:
+        "https://raw.githubusercontent.com/vishalgaddam873/PiratesInvision/main/assets/board.png",
+      imageSize: "150x150",
+      confirmButtonText: "Jogar Novamente"
+    },
+    function(isConfirm) {
+      if (isConfirm) {
+        location.reload();
+      }
+    }
+  );
+}
+
+
